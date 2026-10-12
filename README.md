@@ -1,59 +1,90 @@
-# AngularModelDrivenForm
+# Angular Model Driven Form
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.2.
+Biblioteca experimental de formulários dinâmicos para Angular Material. Os campos, validators e regras de visibilidade são declarados em um model TypeScript; a biblioteca cria o `FormGroup` e renderiza a interface.
 
-## Development server
+## Recursos
 
-To start a local development server, run:
+- Angular Reactive Forms e Signals
+- API baseada em decorators, sem `reflect-metadata`
+- Saída tipada como uma instância do model
+- Campos de texto, número, select, checkbox, data e textarea
+- Validators do Angular e mensagens personalizadas
+- Campos condicionais
+- Layout responsivo sem dependência de Tailwind
+- Testes com Vitest
 
-```bash
-ng serve
+## Estrutura
+
+```text
+projects/model-driven-form/  # biblioteca publicável
+src/app/                    # aplicação de demonstração
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+O diretório `core` não importa Angular Material. A camada `material` é responsável apenas pela renderização.
 
-## Code scaffolding
+## Exemplo
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+```ts
+import { Validators } from '@angular/forms';
+import { FormControlType, FormField } from 'model-driven-form';
 
-```bash
-ng generate component component-name
+export class RegistrationForm {
+  @FormField({
+    type: FormControlType.Text,
+    label: 'Nome',
+    validators: [Validators.required],
+  })
+  name = '';
+
+  @FormField({
+    type: FormControlType.Checkbox,
+    label: 'Apenas remoto',
+  })
+  remoteOnly = false;
+
+  @FormField<RegistrationForm>({
+    type: FormControlType.Text,
+    label: 'Cidade',
+    visibleWhen: (value) => !value.remoteOnly,
+  })
+  city = '';
+}
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
+```html
+<mdf-form [model]="RegistrationForm" (submitted)="save($event)" />
 ```
 
-## Building
-
-To build the project run:
+## Desenvolvimento
 
 ```bash
-ng build
+npm install
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+O comando compila a biblioteca e inicia a aplicação de demonstração em `http://localhost:4200`.
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Validação
 
 ```bash
-ng test
+npm run build
+npm test
+npm run format:check
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+## Publicação local
 
 ```bash
-ng e2e
+npm run build:library
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+O pacote é gerado em `dist/model-driven-form` no formato recomendado para bibliotecas Angular.
 
-## Additional Resources
+## Roadmap
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Registro de renderizadores personalizados
+- Form arrays e grupos aninhados
+- Validators assíncronos
+- Autocomplete, chips e máscaras
+- Internacionalização das mensagens padrão
+- Schematic `ng add`

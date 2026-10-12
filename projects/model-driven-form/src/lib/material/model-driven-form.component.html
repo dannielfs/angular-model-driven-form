@@ -1,0 +1,148 @@
+<form (ngSubmit)="submit()" [formGroup]="form()" class="mdf-form" novalidate>
+  <div class="mdf-form__grid">
+    @for (field of visibleFields(); track field.key) {
+      <div [class.mdf-form__field--wide]="field.columnSpan === 2" class="mdf-form__field">
+        @switch (field.type) {
+          @case (controlType.Checkbox) {
+            <mat-checkbox [formControl]="controlFor(field)">
+              {{ field.label }}
+            </mat-checkbox>
+
+            @if (field.hint) {
+              <div class="mdf-form__checkbox-hint">{{ field.hint }}</div>
+            }
+
+            @if (
+              controlFor(field).invalid && (controlFor(field).touched || controlFor(field).dirty)
+            ) {
+              <div class="mdf-form__standalone-error" role="alert">
+                {{ errorFor(field) }}
+              </div>
+            }
+          }
+
+          @case (controlType.Select) {
+            <mat-form-field appearance="outline">
+              <mat-label>{{ field.label }}</mat-label>
+
+              <mat-select [formControl]="controlFor(field)" [placeholder]="field.placeholder ?? ''">
+                @for (option of field.options ?? []; track option.value) {
+                  <mat-option [disabled]="option.disabled ?? false" [value]="option.value">
+                    {{ option.label }}
+                  </mat-option>
+                }
+              </mat-select>
+
+              @if (field.hint) {
+                <mat-hint>{{ field.hint }}</mat-hint>
+              }
+
+              @if (controlFor(field).invalid) {
+                <mat-error>{{ errorFor(field) }}</mat-error>
+              }
+            </mat-form-field>
+          }
+
+          @case (controlType.Date) {
+            <mat-form-field appearance="outline">
+              <mat-label>{{ field.label }}</mat-label>
+
+              <input
+                [formControl]="controlFor(field)"
+                [matDatepicker]="picker"
+                [placeholder]="field.placeholder ?? ''"
+                matInput
+              />
+
+              <mat-datepicker-toggle [for]="picker" matIconSuffix />
+
+              <mat-datepicker #picker />
+
+              @if (field.hint) {
+                <mat-hint>{{ field.hint }}</mat-hint>
+              }
+
+              @if (controlFor(field).invalid) {
+                <mat-error>{{ errorFor(field) }}</mat-error>
+              }
+            </mat-form-field>
+          }
+
+          @case (controlType.Textarea) {
+            <mat-form-field appearance="outline">
+              <mat-label>{{ field.label }}</mat-label>
+
+              <textarea
+                [formControl]="controlFor(field)"
+                [placeholder]="field.placeholder ?? ''"
+                [rows]="field.rows ?? 4"
+                matInput
+              ></textarea>
+
+              @if (field.hint) {
+                <mat-hint>{{ field.hint }}</mat-hint>
+              }
+
+              @if (controlFor(field).invalid) {
+                <mat-error>{{ errorFor(field) }}</mat-error>
+              }
+            </mat-form-field>
+          }
+
+          @case (controlType.Number) {
+            <mat-form-field appearance="outline">
+              <mat-label>{{ field.label }}</mat-label>
+
+              <input
+                [attr.max]="field.max ?? null"
+                [attr.min]="field.min ?? null"
+                [attr.step]="field.step ?? 1"
+                [formControl]="controlFor(field)"
+                [placeholder]="field.placeholder ?? ''"
+                matInput
+                type="number"
+              />
+
+              @if (field.hint) {
+                <mat-hint>{{ field.hint }}</mat-hint>
+              }
+
+              @if (controlFor(field).invalid) {
+                <mat-error>{{ errorFor(field) }}</mat-error>
+              }
+            </mat-form-field>
+          }
+
+          @default {
+            <mat-form-field appearance="outline">
+              <mat-label>{{ field.label }}</mat-label>
+
+              <input
+                [formControl]="controlFor(field)"
+                [placeholder]="field.placeholder ?? ''"
+                [type]="field.inputType ?? 'text'"
+                matInput
+              />
+
+              @if (field.hint) {
+                <mat-hint>{{ field.hint }}</mat-hint>
+              }
+
+              @if (controlFor(field).invalid) {
+                <mat-error>{{ errorFor(field) }}</mat-error>
+              }
+            </mat-form-field>
+          }
+        }
+      </div>
+    }
+  </div>
+
+  <div class="mdf-form__actions">
+    @if (showReset()) {
+      <button (click)="reset()" matButton="outlined" type="button">Limpar</button>
+    }
+
+    <button matButton="filled" type="submit">{{ submitLabel() }}</button>
+  </div>
+</form>

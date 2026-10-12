@@ -1,0 +1,24 @@
+{
+  "name": "model-driven-form",
+  "version": "0.1.0",
+  "description": "Model-driven dynamic forms for Angular Material.",
+  "author": "Danniel",
+  "license": "MIT",
+  "keywords": [
+    "angular",
+    "angular-material",
+    "dynamic-forms",
+    "reactive-forms"
+  ],
+  "peerDependencies": {
+    "@angular/cdk": "^22.2.0",
+    "@angular/common": "^22.2.0",
+    "@angular/core": "^22.2.0",
+    "@angular/forms": "^22.2.0",
+    "@angular/material": "^22.2.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}
